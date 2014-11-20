@@ -7,15 +7,15 @@
 //
 
 #import "DropItViewController.h"
+#import "DropitBehavior.h"
 
 @interface DropItViewController ()
 //just for the bounds
 @property (weak, nonatomic) IBOutlet UIView *gameView;
 //add behavior gravity (default)
 @property (strong, nonatomic) UIDynamicAnimator * animator;
-@property (strong, nonatomic) UIGravityBehavior * gravityB;
-@property (strong, nonatomic) UICollisionBehavior * collisionB;
-
+//add custom behavior
+@property (strong, nonatomic) DropitBehavior * dropitB;
 
 @end
 
@@ -30,27 +30,14 @@ static const CGSize DROP_SIZE = {40, 40};
     }
     return _animator;
 }
-- (UIGravityBehavior *)gravityB
-{
-    if (!_gravityB) {
-        //just need to happen once
-        _gravityB = [[UIGravityBehavior alloc]init];
-        _gravityB.magnitude = 0.9;
-        [self.animator addBehavior:_gravityB];
-        
-    }
-    return _gravityB;
-}
 
-- (UICollisionBehavior *)collisionB
+- (DropitBehavior *)dropitB
 {
-    if (_collisionB) {
-        _collisionB = [[UICollisionBehavior alloc]init];
-        //set collition boundaries?
-        _collisionB.translatesReferenceBoundsIntoBoundary = YES;
-        [self.animator addBehavior:_collisionB];
+    if (!_dropitB) {
+        _dropitB = [[DropitBehavior alloc]init];
+        [self.animator addBehavior:_dropitB];
     }
-    return _collisionB;
+    return _dropitB;
 }
 
 #pragma mark - Add subviews
@@ -77,8 +64,7 @@ static const CGSize DROP_SIZE = {40, 40};
     [self.gameView addSubview:dropView];
     
     //add drop to behaviors
-    [self.gravityB   addItem:dropView];
-    [self.collisionB addItem:dropView];
+    [self.dropitB addItem:dropView];
 }
 
 - (UIColor *)randomColor

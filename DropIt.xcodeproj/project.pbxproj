@@ -15,6 +15,7 @@
 		EAF69BA31A1D092100376C08 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = EAF69BA11A1D092100376C08 /* LaunchScreen.xib */; };
 		EAF69BAF1A1D092100376C08 /* DropItTests.m in Sources */ = {isa = PBXBuildFile; fileRef = EAF69BAE1A1D092100376C08 /* DropItTests.m */; };
 		EAF69BB91A1D65B600376C08 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = EAF69BB81A1D65B600376C08 /* .gitignore */; };
+		EAF69BBC1A1D703300376C08 /* DropitBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = EAF69BBB1A1D703300376C08 /* DropitBehavior.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +43,8 @@
 		EAF69BAD1A1D092100376C08 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EAF69BAE1A1D092100376C08 /* DropItTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DropItTests.m; sourceTree = "<group>"; };
 		EAF69BB81A1D65B600376C08 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
+		EAF69BBA1A1D703300376C08 /* DropitBehavior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DropitBehavior.h; sourceTree = "<group>"; };
+		EAF69BBB1A1D703300376C08 /* DropitBehavior.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DropitBehavior.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +90,8 @@
 				EAF69B9A1A1D092100376C08 /* DropItViewController.m */,
 				EAF69B9C1A1D092100376C08 /* Main.storyboard */,
 				EAF69BB81A1D65B600376C08 /* .gitignore */,
+				EAF69BBA1A1D703300376C08 /* DropitBehavior.h */,
+				EAF69BBB1A1D703300376C08 /* DropitBehavior.m */,
 				EAF69B9F1A1D092100376C08 /* Images.xcassets */,
 				EAF69BA11A1D092100376C08 /* LaunchScreen.xib */,
 				EAF69B921A1D092100376C08 /* Supporting Files */,
@@ -224,6 +229,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EAF69B9B1A1D092100376C08 /* DropItViewController.m in Sources */,
+				EAF69BBC1A1D703300376C08 /* DropitBehavior.m in Sources */,
 				EAF69B981A1D092100376C08 /* AppDelegate.m in Sources */,
 				EAF69B951A1D092100376C08 /* main.m in Sources */,
 			);
