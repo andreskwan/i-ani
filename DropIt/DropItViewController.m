@@ -11,12 +11,37 @@
 @interface DropItViewController ()
 //just for the bounds
 @property (weak, nonatomic) IBOutlet UIView *gameView;
+//add behavior gravity (default)
+@property (strong, nonatomic) UIDynamicAnimator * animator;
+@property (strong, nonatomic) UIGravityBehavior * gravityB;
+
 
 @end
 
 @implementation DropItViewController
 static const CGSize DROP_SIZE = {40, 40};
+#pragma mark - Add gravity
+//the main view will have gravity
+- (UIDynamicAnimator *)animator
+{
+    if (!_animator) {
+        _animator = [[UIDynamicAnimator alloc]initWithReferenceView:self.gameView];
+    }
+    return _animator;
+}
+- (UIGravityBehavior *)gravityB
+{
+    if (!_gravityB) {
+        //just need to happen once
+        _gravityB = [[UIGravityBehavior alloc]init];
+        _gravityB.magnitude = 0.9;
+        [self.animator addBehavior:_gravityB];
+        
+    }
+    return _gravityB;
+}
 
+#pragma mark - Add subviews
 //tab gesture
 //drop a square
 - (IBAction)tap:(UITapGestureRecognizer *)sender
@@ -38,6 +63,9 @@ static const CGSize DROP_SIZE = {40, 40};
     dropView.backgroundColor = [self randomColor];
     //add subview to the main view
     [self.gameView addSubview:dropView];
+    
+    //add drop to
+    [self.gravityB addItem:dropView];
 }
 
 - (UIColor *)randomColor
