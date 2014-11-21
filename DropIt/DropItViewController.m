@@ -108,15 +108,16 @@ static const CGSize DROP_SIZE = {40, 40};
                      completion:^(BOOL finished){
                          //deallocate drops? ARC takes care of this
                          //remove from view?
-//                         [dropsToRemove makeObjectsPerformSelector:@selector(removeFromSuperView)];
+
                          for (UIView *drop in dropsToRemove) {
-                             if ([drop respondsToSelector:@selector(removeFromSuperView)]) {
+                             if ([drop respondsToSelector:@selector(removeFromSuperview)]) {
                                  [drop removeFromSuperview];
                              }else{
                                  NSLog(@"%@",@"Not removed from superview");
                              }
                          }
                      }];
+
 }
 #pragma mark - Pan Gesture (Attaching)
 //pan gesture to use with attachmentBehavior
