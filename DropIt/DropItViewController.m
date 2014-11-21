@@ -8,8 +8,10 @@
 
 #import "DropItViewController.h"
 #import "DropitBehavior.h"
-
-@interface DropItViewController ()
+//this protocol allows me to identify when an
+//animator is going to pause (stop animation) or
+//when is going to resume animation
+@interface DropItViewController () <UIDynamicAnimatorDelegate>
 //just for the bounds
 @property (weak, nonatomic) IBOutlet UIView *gameView;
 //add behavior gravity (default)
@@ -27,6 +29,11 @@ static const CGSize DROP_SIZE = {40, 40};
 {
     if (!_animator) {
         _animator = [[UIDynamicAnimator alloc]initWithReferenceView:self.gameView];
+        //to identify when the animation is going to
+        //pause or resume.
+        //we need to know when is going to stop, to start
+        //the UIView transition animation.
+        _animator.delegate = self;
     }
     return _animator;
 }
@@ -38,6 +45,73 @@ static const CGSize DROP_SIZE = {40, 40};
         [self.animator addBehavior:_dropitB];
     }
     return _dropitB;
+}
+
+#pragma mark - Animator Delegate implementation
+- (void)dynamicAnimatorWillResume:(UIDynamicAnimator *)animator
+{
+    
+}
+- (void)dynamicAnimatorDidPause:(UIDynamicAnimator *)animator
+{
+    [self removeCompletedRows];
+}
+ -(BOOL)removeCompletedRows
+{
+    //will be fill with all drops that complete a row
+    NSMutableArray * dropsToRemove = [[NSMutableArray alloc]init];
+    for (CGFloat y = self.gameView.bounds.size.height-(DROP_SIZE.height/2); y > 0; y -= DROP_SIZE.height)
+    {
+        BOOL rowIsComplete = YES;
+        NSMutableArray *dropsFound = [[NSMutableArray alloc]init];
+        for (CGFloat x = DROP_SIZE.width/2; x <= self.gameView.bounds.size.width-(DROP_SIZE.width/2); x += DROP_SIZE.width)
+        {
+            UIView *hitView = [self.gameView hitTest:CGPointMake(x, y) withEvent:NULL];
+            if ([hitView superview] == self.gameView) {
+                [dropsFound addObject:hitView];
+            }else{
+                rowIsComplete = NO;
+                break;
+            }
+        }
+        if (![dropsFound count]) break;
+        if (rowIsComplete) [dropsToRemove addObjectsFromArray:dropsFound];
+    }
+    //how to remove them
+    //should then need to [customBehavior removeItem:item]?
+    if ([dropsToRemove count]) {
+        for (UIView *drop in dropsToRemove) {
+            [self.dropitB removeItem:drop];
+        }
+        [self animateRemoveingDrops:dropsToRemove];
+    }
+    return NO;
+}
+//here I'm going to use blocks to implement the animation for blow up
+- (void)animateRemoveingDrops:(NSArray*)dropsToRemove
+{
+    [UIView animateWithDuration:1.0
+                     animations:^{
+                         //send each drop outside the frame
+                         //to a random position
+                         for (UIView *drop in dropsToRemove) {
+                             int x = (arc4random()%(int)(self.gameView.bounds.size.width*5)) - (int)self.gameView.bounds.size.width*2;
+                             int y = self.gameView.bounds.size.height;
+                             drop.center = CGPointMake(x, -y);
+                         }
+                     }
+                     completion:^(BOOL finished){
+                         //deallocate drops? ARC takes care of this
+                         //remove from view?
+//                         [dropsToRemove makeObjectsPerformSelector:@selector(removeFromSuperView)];
+                         for (UIView *drop in dropsToRemove) {
+                             if ([drop respondsToSelector:@selector(removeFromSuperView)]) {
+                                 [drop removeFromSuperview];
+                             }else{
+                                 NSLog(@"%@",@"Not removed from superview");
+                             }
+                         }
+                     }];
 }
 
 #pragma mark - Add subviews
