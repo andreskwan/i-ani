@@ -11,6 +11,8 @@
 @interface DropitBehavior()
 @property (strong, nonatomic) UIGravityBehavior * gravityB;
 @property (strong, nonatomic) UICollisionBehavior * collisionB;
+//to configure items behaviors
+@property (strong, nonatomic) UIDynamicItemBehavior * animationOptions;
 @end
 
 @implementation DropitBehavior
@@ -36,16 +38,28 @@
     return _collisionB;
 }
 
+- (UIDynamicItemBehavior *)animationOptions
+{
+    if (!_animationOptions) {
+        _animationOptions = [[UIDynamicItemBehavior alloc]init];
+        _animationOptions.allowsRotation = NO;
+        
+    }
+    return _animationOptions;
+}
+
 #pragma mark - Public API
 - (void)addItem:(id<UIDynamicItem>)item
 {
     [self.gravityB   addItem:item];
     [self.collisionB addItem:item];
+    [self.animationOptions addItem:item];
 }
 - (void)removeItem:(id<UIDynamicItem>)item
 {
     [self.gravityB   removeItem:item];
     [self.collisionB removeItem:item];
+    [self.animationOptions removeItem:item];
 }
 
 //overriding init
@@ -54,6 +68,7 @@
     self = [super init];
     [self addChildBehavior:self.gravityB];
     [self addChildBehavior:self.collisionB];
+    [self addChildBehavior:self.animationOptions];
     return self;
 }
 
