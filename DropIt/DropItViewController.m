@@ -18,6 +18,10 @@
 @property (strong, nonatomic) UIDynamicAnimator * animator;
 //add custom behavior
 @property (strong, nonatomic) DropitBehavior * dropitB;
+//to attach
+@property (strong, nonatomic) UIAttachmentBehavior * attachmentB;
+//we also need which view is droppingView so I could attach to it.
+@property (strong, nonatomic) UIView * droppingView;
 
 @end
 
@@ -56,6 +60,7 @@ static const CGSize DROP_SIZE = {40, 40};
 {
     [self removeCompletedRows];
 }
+#pragma mark - Animations
  -(BOOL)removeCompletedRows
 {
     //will be fill with all drops that complete a row
@@ -113,8 +118,32 @@ static const CGSize DROP_SIZE = {40, 40};
                          }
                      }];
 }
+#pragma mark - Pan Gesture (Attaching)
+//pan gesture to use with attachmentBehavior
+- (IBAction)pan:(UIPanGestureRecognizer *)sender {
+    CGPoint gesturePoint = [sender locationInView:self.gameView];
+    if (sender.state == UIGestureRecognizerStateBegan)
+    {
+        [self attachDroppingViewToPoint:gesturePoint];
+    }else if(sender.state == UIGestureRecognizerStateChanged){
+        self.attachmentB.anchorPoint = gesturePoint;
+    }else if(sender.state == UIGestureRecognizerStateEnded){
+        [self.animator removeBehavior:self.attachmentB];
+    }
+}
+- (void)attachDroppingViewToPoint:(CGPoint)anchorPoint
+{
+    if (self.droppingView){
+        self.attachmentB =
+        [[UIAttachmentBehavior alloc]initWithItem:self.droppingView
+                                 attachedToAnchor:anchorPoint];
+        self.droppingView = nil;
+        //start to animate the attachment
+        [self.animator addBehavior:self.attachmentB];
+    }
+}
 
-#pragma mark - Add subviews
+#pragma mark - Tap Gesture (Dropping)
 //tab gesture
 //drop a square
 - (IBAction)tap:(UITapGestureRecognizer *)sender
@@ -137,6 +166,8 @@ static const CGSize DROP_SIZE = {40, 40};
     //add subview to the main view
     [self.gameView addSubview:dropView];
     
+    self.droppingView = dropView;
+    
     //add drop to behaviors
     [self.dropitB addItem:dropView];
 }
@@ -153,6 +184,7 @@ static const CGSize DROP_SIZE = {40, 40};
     return [UIColor blueColor];
 }
 
+#pragma mark - Lifecycle methods
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
