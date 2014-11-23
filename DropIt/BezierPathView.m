@@ -23,7 +23,9 @@
 - (void)drawRect:(CGRect)rect {
     // Drawing code
     [[UIColor redColor] setStroke];
+    self.path.lineWidth = 3.0;
     [self.path stroke];
+
 }
 
 

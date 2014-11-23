@@ -125,7 +125,8 @@ static const CGSize DROP_SIZE = {40, 40};
 }
 #pragma mark - Pan Gesture (Attaching)
 //pan gesture to use with attachmentBehavior
-- (IBAction)pan:(UIPanGestureRecognizer *)sender {
+- (IBAction)pan:(UIPanGestureRecognizer *)sender
+{
     CGPoint gesturePoint = [sender locationInView:self.gameView];
     if (sender.state == UIGestureRecognizerStateBegan)
     {
@@ -134,6 +135,7 @@ static const CGSize DROP_SIZE = {40, 40};
         self.attachmentB.anchorPoint = gesturePoint;
     }else if(sender.state == UIGestureRecognizerStateEnded){
         [self.animator removeBehavior:self.attachmentB];
+        self.gameView.path = nil;
     }
 }
 - (void)attachDroppingViewToPoint:(CGPoint)anchorPoint
@@ -142,6 +144,23 @@ static const CGSize DROP_SIZE = {40, 40};
         self.attachmentB =
         [[UIAttachmentBehavior alloc]initWithItem:self.droppingView
                                  attachedToAnchor:anchorPoint];
+        //Draw a bezierPath between the anchor point and the dropping drop
+        __weak DropItViewController * weakSelf = self;
+        UIView * droppingView = self.droppingView;
+        self.attachmentB.action = ^{
+            UIBezierPath * path = [[UIBezierPath alloc]init];
+            //start bezierPath in the anchor point
+            //self.attachmentB.anchorPoint
+            //should not be used, because it creates a circular reference
+            //and the parameter "anchorPoint" neither because this is the
+            //first point, but it changes with time, so it needs to be
+            //tracked,
+            //that is what it does "self.attachmentB = alloc:initWithItem:attachedToAnchor"
+            [path moveToPoint:weakSelf.attachmentB.anchorPoint];
+            [path addLineToPoint:droppingView.center];
+            //add path to the view
+            weakSelf.gameView.path = path;
+        };
         self.droppingView = nil;
         //start to animate the attachment
         [self.animator addBehavior:self.attachmentB];
