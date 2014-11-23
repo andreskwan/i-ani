@@ -8,12 +8,16 @@
 
 #import "DropItViewController.h"
 #import "DropitBehavior.h"
+//UIView with a UIBezierPath property
+#import "BezierPathView.h"
+
 //this protocol allows me to identify when an
 //animator is going to pause (stop animation) or
 //when is going to resume animation
 @interface DropItViewController () <UIDynamicAnimatorDelegate>
 //just for the bounds
-@property (weak, nonatomic) IBOutlet UIView *gameView;
+//Generic UIView replaced with BezierPathView
+@property (weak, nonatomic) IBOutlet BezierPathView *gameView;
 //add behavior gravity (default)
 @property (strong, nonatomic) UIDynamicAnimator * animator;
 //add custom behavior
